@@ -5,26 +5,21 @@ from pydantic import BaseModel
 import pickle
 import pandas as pd
 
-
-with open("../model.pkl", 'rb') as f:
+# Load model - simple path without os module
+with open("model.pkl", 'rb') as f:
     model = pickle.load(f)
 
-
-
 app = FastAPI()
-
-
 
 # Set up templates
 templates = Jinja2Templates(directory="templates")
 
 class EmployeeInput(BaseModel):
     age: float
-    gender: object
-    education_level: object
-    job_title: object
+    gender: str
+    education_level: str
+    job_title: str
     yoe: float
-
 
 class EmployeePrediction(BaseModel):
     predicted_salary: float
@@ -33,14 +28,13 @@ class EmployeePrediction(BaseModel):
 async def read_root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
-
-@app.post("/predict", response_model=EmployeePrediction)
+@app.post("/predict", response_class=HTMLResponse)
 async def predict(
     request: Request,
     age: float = Form(...),
-    gender: object = Form(...),
-    education_level: object = Form(...),
-    job_title: object = Form(...),
+    gender: str = Form(...),
+    education_level: str = Form(...),
+    job_title: str = Form(...),
     yoe: float = Form(...),
 ):
     # Convert the input data to a pandas dataframe
@@ -53,13 +47,13 @@ async def predict(
     }])
 
     # Make a prediction
-    predicted_salary = model.predict(input_data)
+    predicted_salary = model.predict(input_data)[0]
 
     return templates.TemplateResponse(
         "result.html",
         {
             "request": request,
-            "predicted_salary": predicted_salary,
+            "predicted_salary": round(predicted_salary, 2),
             'Age': age,
             'Gender': gender,
             'Education Level': education_level,
@@ -71,5 +65,3 @@ async def predict(
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
-
-
