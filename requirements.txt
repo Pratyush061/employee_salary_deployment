@@ -1,5 +1,6 @@
 fastapi
 pydantic
+uvicorn
 jinja2
 pandas
 scikit-learn
