@@ -41,9 +41,9 @@ async def predict(
     input_data = pd.DataFrame([{
         'Age': age,
         'Gender': gender,
-        'Education_Level': education_level,
-        'Job_Title': job_title,
-        'Years_of_Experience': yoe
+        'Education Level': education_level,
+        'Job Title': job_title,
+        'Years of Experience': yoe
     }])
 
     # Make a prediction
@@ -56,9 +56,9 @@ async def predict(
             "predicted_salary": round(predicted_salary, 2),
             'Age': age,
             'Gender': gender,
-            'Education_Level': education_level,
-            'Job_Title': job_title,
-            'Years_of_Experience': yoe
+            'Education Level': education_level,
+            'Job Title': job_title,
+            'Years of Experience': yoe
         },
     )
 
